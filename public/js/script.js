@@ -38,6 +38,12 @@ var Sandbox = function(core, moduleId) {
                 throw new Error('Expected object');
             }
             Core.trigerEvent(channel);
+        },
+        bindEvt: function(type, selector, fn) {
+            Core.jq.bindEvt(type, selector, fn);
+        },
+        unbindEvt: function(type, selector) {
+            Core.jq.unbindEvt(type, selector);
         }
     }
 };
@@ -157,10 +163,70 @@ Core = (function() {
                     return true;
                 }
             }
+        },
+        jq: {
+            bindEvt: function(type, selector, fn) {
+                $(selector).bind(type, fn);
+            },
+
+            unbindEvt: function(type, selector) {
+                $(selector).unbind(type);
+            }
         }
     }
 
 }());
+
+Core.register('csv-module', function(sandbox) {
+
+    return {
+        init: function() {
+            sandbox.listen([
+                'diagnosis-finished'
+            ], this.handleNotification, this);
+        },
+
+        destroy: function() {
+            sandbox.unbindEvt('click', '.csv-button');
+        },
+
+        compile: function(arg) {
+            var i = 0,
+                li  = document.querySelectorAll('#diagnos li'),
+                len = li.length,
+                csv = '';
+
+            for(; i < len; i += 1) {
+                csv += li[ i ].innerHTML.replace(":", ",") + '\n';
+            }
+
+            this.addEvent(csv);
+
+        },
+
+        addEvent: function(arg) {
+
+            var that = this;
+
+            sandbox.bindEvt('click', '.csv-button', function(e) {
+                console.log(arg)
+
+                that.destroy();
+            });
+
+            
+        },
+
+        handleNotification: function(note) {
+            switch (note.type) {
+                case 'diagnosis-finished':
+                    this.compile(note.data);
+                    return;
+            }
+        }
+    }
+
+});
 
 Core.register('timeline', function(sandbox) {
 
