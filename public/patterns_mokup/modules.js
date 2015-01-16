@@ -85,24 +85,6 @@ Core = (function() {
         start: function(moduleId) {
             moduleData[moduleId].instance = moduleData[moduleId].creator(new Sandbox(this));
             moduleData[moduleId].instance.init();
-
-            if (!debug) {
-	            for (name in moduleData[moduleId].instance) {
-	                method = moduleData[moduleId].instance[name];
-	                if (typeof method == "function") {
-	                    moduleData[moduleId].instance[name] = function(name, method) {
-	                        return function() {
-	                            try {
-	                                return method.apply(this, arguments);
-	                            } catch (ex) {
-	                                log(1, name + "(): " + ex.message);
-	                            }
-	                        };
-	                    }(name, method);
-	                }
-	            }
-	        }
-	        return moduleData[moduleId].instance;
         },
 
         stop: function(moduleId) {
@@ -301,7 +283,6 @@ Core.register('timeline-filter', function(sandbox) {
     }
 
 });
-
 
 Core.register('status-poster', function(sandbox) {
 

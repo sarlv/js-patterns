@@ -2,14 +2,29 @@
 <html>
 <head>
 	<title>Mob project</title>
+	<style type="text/css">
+		#top-gallery {
+			display: inline-block !important;
+		}
+		#vacation-photos {
+			text-align: center;
+		}
+		#vacation-photos img {
+			width: 50px;
+			height: auto;
+		}
+	</style>
 </head>
 <body>
 
-<h1>Dave Matthews vids</h1>
+<div id="output"></div>
 
 <p>Player one press "1", player two press "0". Go! (you have half a minute...)</p>
 <div id="results">000</div>
+<div id="vacation-photos" class="dynamic-gallery"></div>
 
 <script src="js/script.js"></script>
+<script src="js/patterns/core-jquery.js"></script>
+
 </body>
 </html>

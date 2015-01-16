@@ -2,7 +2,7 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        
+
         clean: {
             build: {
                 src: ['build/*']
@@ -64,6 +64,22 @@ module.exports = function(grunt) {
 
         concurrent: {
             tasks: ['nodemon', 'watch', 'browserSync']
+        },
+
+        jasmine: {
+            customTemplate: {
+                src: [
+                    'public/js/*.js',
+                    'public/js/**/*.js'
+                    ],
+                options: {
+                    specs: [
+                        'spec/tests/*spec.js',
+                        'spec/tests/patterns/*spec.js'
+                        ],
+                    helpers: 'spec/helpers/*Helper.js'
+                }
+            }
         }
 
 
@@ -78,7 +94,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-nodemon');
     grunt.loadNpmTasks('grunt-browser-sync');
     grunt.loadNpmTasks('grunt-concurrent');
+    grunt.loadNpmTasks('grunt-contrib-jasmine');
 
+    grunt.registerTask('test', ['jasmine']);
     grunt.registerTask('del', ['clean']);
     grunt.registerTask('default', ['clean', 'concat', 'uglify', 'concurrent']);
 

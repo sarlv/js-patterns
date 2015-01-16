@@ -1,54 +1,12 @@
-/*
-NC Zakaz modules pattern
-based on: https://www.youtube.com/watch?v=b5pFv9NB9fs
-and article from Addy Osmani
-http://addyosmani.com/largescalejavascript/
+/**
+	Core module
+	This module based on NC Zakas presentation
+	https://www.youtube.com/watch?v=b5pFv9NB9fs
 */
 
+'use strict'
 
-var Sandbox = function(core, moduleId) {
-
-    var base = core.base;
-    
-    return {
-        installTo: function(obj) {
-            obj.listen = listen;
-            obj.notify = notify;
-        },
-
-        listen: function(channel, fn, ctx) {
-
-            if(!base.isArray(channel)) {
-                throw new Error('Expected array');
-            }
-
-            if(!base.isFunction(fn)) {
-                throw new Error('Expected function');
-            }
-
-            if(!base.isObject(ctx)) {
-                throw new Error('Expected object');
-            }
-
-            Core.registerEvent(channel, fn, ctx);
-        },
-
-        notify: function(channel) {
-            if(!base.isObject(channel)) {
-                throw new Error('Expected object');
-            }
-            Core.trigerEvent(channel);
-        },
-        bindEvt: function(type, selector, fn) {
-            Core.jq.bindEvt(type, selector, fn);
-        },
-        unbindEvt: function(type, selector) {
-            Core.jq.unbindEvt(type, selector);
-        }
-    }
-};
-
-Core = (function() {
+var Core = (function() {
     var moduleData = {}, debug = false, Sn = {};
     
     function createInstance(moduleId) {
@@ -193,139 +151,14 @@ Core = (function() {
 
 }());
 
-Core.register('csv-module', function(sandbox) {
-
-    return {
-        init: function() {
-            sandbox.listen([
-                'diagnosis-finished'
-            ], this.handleNotification, this);
-        },
-
-        destroy: function() {
-            sandbox.unbindEvt('click', '.csv-button');
-        },
-
-        compile: function(arg) {
-            var i = 0,
-                li  = document.querySelectorAll('#diagnos li'),
-                len = li.length,
-                csv = '';
-
-            for(; i < len; i += 1) {
-                csv += li[ i ].innerHTML.replace(":", ",") + '\n';
-            }
-
-            this.addEvent(csv);
-
-        },
-
-        addEvent: function(arg) {
-
-            var that = this;
-
-            sandbox.bindEvt('click', '.csv-button', function(e) {
-                console.log(arg)
-
-                that.destroy();
-            });
-
-            
-        },
-
-        handleNotification: function(note) {
-            switch (note.type) {
-                case 'diagnosis-finished':
-                    this.compile(note.data);
-                    return;
-            }
-        }
-    }
-
-});
-
-Core.register('timeline', function(sandbox) {
-
-    return {
-        init: function() {
-            sandbox.listen([
-                'timeline-filter-changed',
-                'post-status'
-            ], this.handleNotification, this);
-
-        },
-
-        destroy: function() {
-
-        },
-
-        applayFilter: function(arg) {
-            console.log(arg);
-        },
-
-        post: function(arg) {
-            console.log(arg)
-        },
-
-        handleNotification: function(note) {
-            switch (note.type) {
-                case 'timeline-filter-changed':
-                    this.applayFilter(note.data);
-                    return;
-                case 'post-status':
-                    this.post(note.data);
-                    return;
-            }
-        }
-    }
-
-});
-
-Core.register('timeline-filter', function(sandbox) {
-
-    return {
-        init: function() {
-            this.changeFilter('This is text message!');
-        },
-
-        destroy: function() {
-
-        },
-
-        changeFilter: function(filter) {
-            sandbox.notify({
-                type: 'timeline-filter-changed',
-                data: filter
-            });
-        }
-    }
-
-});
-
-
-Core.register('status-poster', function(sandbox) {
-
-    return {
-        init: function() {
-            this.postStatus('Post status text');
-        },
-
-        destroy: function() {
-
-        },
-
-        postStatus: function(statusText) {
-            sandbox.notify({
-                type: 'post-status',
-                data: statusText
-            });
-        }
-    }
-
-});
 
 
 
-Core.startAll();
+
+
+
+
+
+
 
 
